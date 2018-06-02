@@ -6,3 +6,5 @@ dist/
 build/
 *.egg
 *.egg-info
+
+todo.txt
