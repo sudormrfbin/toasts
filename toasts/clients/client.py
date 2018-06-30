@@ -9,7 +9,6 @@ This module contains ABCs for designing concrete client classes
 from abc import ABCMeta, abstractmethod
 
 import requests
-import keyring
 
 class Client(metaclass=ABCMeta):
     """
@@ -31,28 +30,10 @@ class Client(metaclass=ABCMeta):
         """
         self.config = config
         self.session = requests.Session()
-        self.authenticate()
 
+    @abstractmethod
     def authenticate(self):
-        self.session.auth = self._get_credentials()
-        # test credentials; toasts.exceptions.AuthError is raised if invalid
-        self.get_notifications()
-
-    def _get_credentials(self):
-        """
-        Get the credentials of the user, the username and password.
-        Returns:
-            tuple: Tuple of the form (username, password)
-        """
-        username = self.config[self.NAME]['username']
-
-        # TODO: look into keyring docs; see if we can put toasts in service_name, NAME in username
-        password = keyring.get_password(
-            service_name='system',
-            username='toasts-{}'.format(self.NAME)
-            )
-
-        return (username, password)
+        pass
 
     @abstractmethod
     def get_notifications(self):
