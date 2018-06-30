@@ -3,10 +3,12 @@
 toasts.clients.client
 ~~~~~~~~~~~~~~~~~~~~~
 
-This module contains ABCs for designing concrete client classes
+This module contains base classes for designing concrete client classes
 """
 
 from abc import ABCMeta, abstractmethod
+
+import os
 
 import requests
 
@@ -63,3 +65,19 @@ class Client(metaclass=ABCMeta):
                 displayed as such.
         """
         pass
+
+
+class PersonalAccessTokenClient(Client):
+    """
+    Clients that use a personal access token to get resources(notifications)
+    from a site. Personal access tokens have to be usually aquired by the user
+    manually
+    """
+
+    USERNAME_ENV_VAR = None   # environment variable holding username
+    TOKEN_ENV_VAR = None   # access token environment variable
+
+    def authenticate(self):
+        username = os.getenv(self.USERNAME_ENV_VAR)
+        token = os.getenv(self.TOKEN_ENV_VAR)
+        self.session.auth = (username, token)
