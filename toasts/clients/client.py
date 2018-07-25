@@ -28,7 +28,7 @@ class Client(metaclass=ABCMeta):
     def __init__(self, config):
         """
         Args:
-            config (toasts.helpers.Preferences): Contains preferences set
+            config (toasts.wrappers.Preferences): Contains preferences set
                 by user.
         """
         self.config = config

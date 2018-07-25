@@ -1,9 +1,9 @@
 
 """
-toasts.helpers.py
+toasts.wrappers.py
 ~~~~~~~~~~~~~~~~~
 
-Helper classes for the app.
+Wrapper classes for the app.
 """
 
 import configobj
