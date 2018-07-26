@@ -6,11 +6,13 @@ toasts.clients.client
 This module contains base classes for designing concrete client classes
 """
 
+import os
 from abc import ABCMeta, abstractmethod
 
-import os
-
 import requests
+
+from ..exceptions import AuthError
+
 
 class Client(metaclass=ABCMeta):
     """
@@ -81,4 +83,8 @@ class PersonalAccessTokenClient(Client):
     def authenticate(self):
         username = os.getenv(self.USERNAME_ENV_VAR)
         token = os.getenv(self.TOKEN_ENV_VAR)
+
+        if not (username and token):
+            raise AuthError(self.NAME)
+
         self.session.auth = (username, token)
