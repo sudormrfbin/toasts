@@ -1,7 +1,7 @@
 
 """
 toasts.wrappers.py
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 Wrapper classes for the app.
 """
