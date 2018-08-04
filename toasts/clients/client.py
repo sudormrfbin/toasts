@@ -9,8 +9,7 @@ This module contains base classes for designing concrete client classes
 import os
 from abc import ABCMeta, abstractmethod
 
-import requests
-
+from toasts import wrappers
 from ..exceptions import AuthError
 
 
@@ -34,7 +33,8 @@ class Client(metaclass=ABCMeta):
                 by user.
         """
         self.config = config
-        self.session = requests.Session()
+        rt = self.config.get_pref('general', 'timeout')
+        self.session = wrappers.Session(request_timeout=rt)
 
     @abstractmethod
     def authenticate(self):

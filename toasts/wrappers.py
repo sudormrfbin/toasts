@@ -6,7 +6,10 @@ toasts.wrappers.py
 Wrapper objects for the app.
 """
 
+import functools
+
 import plyer
+import requests
 import configobj
 
 from . import util
@@ -26,6 +29,12 @@ def show_notif(title, msg, icon):
 def show_error(msg, title='An error occured in Toasts'):
     """Show an error message as notification"""
     show_notif(title=title, msg=msg, icon='error')
+
+
+class Session(requests.Session):
+    def __init__(self, request_timeout, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.get = functools.partial(self.get, timeout=request_timeout)
 
 
 class Preferences:
