@@ -8,3 +8,4 @@ build/
 *.egg-info
 
 todo.txt
+*.output
