@@ -9,8 +9,8 @@ Wrapper objects for the app.
 import functools
 
 import plyer
+import confuse
 import requests
-import configobj
 
 from . import util
 
@@ -39,18 +39,19 @@ class Session(requests.Session):
 
 class Preferences:
     """
-    Class used for fetching preferences
+    Class used for fetching preferences.
     """
-    def __init__(self, path):
-        """
-        Args:
-            path (str): Path to the config file
-        """
-        self._config = configobj.ConfigObj(path)
+    def __init__(self):
+        # confuse looks in system specific directories for config files (config.yaml)
+        self._config = confuse.Configuration(appname='toasts')
 
-    def get_pref(self, section, item):
+    def get_pref(self, opt):
         """
-        Return the value of the `item` option in the `section` sub-division
-        of the user's preferences
+        Return the value of the `opt` option.
+        Args:
+            opt (str): name of option - "general.clients", "sites.github.token", etc.
         """
-        return self._config[section][item]
+        val = self._config
+        for key in opt.split('.'):
+            val = val[key]
+        return val.get()
