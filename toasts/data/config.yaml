@@ -10,6 +10,9 @@ general:
         # Check for notifications every ___ minutes
         # Default: 3 ; Minimum value: 2
         check_every: 3
+        # Show notification for ___ seconds
+        # Default: 7 ; Minimum value: 2
+        notif_timeout: 7
 
 sites:
         github:
