@@ -4,9 +4,9 @@ general:
         # List of sites to enable; comma seperated list
         # Default: []
         clients: []
-        # Connection timeout, in seconds. Min value - 1
-        # Default: 7 ; Minimum Value: 1
-        timeout: 7
+        # Connection timeout, in seconds
+        # Default: 7 ; Minimum value: 1
+        conn_timeout: 7
         # Check for notifications every ___ minutes
         # Default: 3 ; Minimum value: 2
         check_every: 3
