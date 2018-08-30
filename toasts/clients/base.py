@@ -9,7 +9,7 @@ This module contains base classes for designing concrete client classes.
 import os
 from abc import ABCMeta, abstractmethod
 
-from toasts import wrappers
+from .. import wrappers
 from ..exceptions import AuthError
 
 
