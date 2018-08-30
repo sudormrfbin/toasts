@@ -15,7 +15,7 @@ general:
         notif_timeout: 7
         # Maximum number of notifications to show at a time, of individual clients.
         # Default: 2
-        # Note: Value of 0 will show all notifications; it may clutter your workspace.
+        # Note: Value of -1 will show all notifications; it may clutter your workspace.
         notif_max_show: 2
 
 sites:

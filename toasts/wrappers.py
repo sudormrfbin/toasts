@@ -30,7 +30,8 @@ class Notifier():
     """
     def __init__(self, timeout, max_show):
         self.disp_timeout = timeout
-        self.max_show = max_show
+        self.max_show = max_show if max_show >= 0 else None
+        # TODO: max_show = -1 , show all notifs
 
     def show_notif(self, title, msgs, icon):
         """
@@ -56,11 +57,14 @@ class Notifier():
                 timeout=self.disp_timeout
             )
 
-        for msg in msgs[0 :self.max_show]:
+        msgs_to_show = msgs[0 : self.max_show]
+        more = len(msgs) - len(msgs_to_show)
+
+        for msg in msgs_to_show:
             notify(msg)
             time.sleep(3)   # give some time to read the notification
 
-        if len(msgs) > self.max_show:
+        if more != 0:
             more = len(msgs) - self.max_show
             msg = (
                 'You have {} more notification(s) from this website. '
