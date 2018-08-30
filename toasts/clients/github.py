@@ -9,7 +9,7 @@ See https://developer.github.com/v3/activity/notifications/ for api docs.
 """
 
 
-from .client import PersonalAccessTokenClient
+from .base import PersonalAccessTokenClient
 from ..exceptions import AuthError, UnexpectedResponse
 
 
@@ -21,6 +21,7 @@ class GitHubClient(PersonalAccessTokenClient):
     TOKEN_ENV_VAR = 'GH_TOKEN'
 
     def get_notifications(self):
+        self.authenticate()
         response = self.session.get(self.API_ENDPOINT)
 
         if response.status_code == 200:

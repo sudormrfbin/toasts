@@ -1,9 +1,9 @@
 
 """
-toasts.clients.client
-~~~~~~~~~~~~~~~~~~~~~
+toasts.clients.base
+~~~~~~~~~~~~~~~~~~~
 
-This module contains base classes for designing concrete client classes
+This module contains base classes for designing concrete client classes.
 """
 
 import os
