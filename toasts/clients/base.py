@@ -33,7 +33,7 @@ class Client(metaclass=ABCMeta):
                 by user.
         """
         self.config = config
-        rt = self.config.get_pref('general', 'timeout')
+        rt = self.config.get_pref('general.notif_timeout')
         self.session = wrappers.Session(request_timeout=rt)
 
     @abstractmethod
