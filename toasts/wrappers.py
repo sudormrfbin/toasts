@@ -66,9 +66,7 @@ class Notifier():
         if unshown:
             msg = (
                 'You have {} more notification(s) from this website. '
-                'Please go to the website to see them.'
-                '\n\nEdit the "max_show" option in the config file to show '
-                'more messages in the desktop.'.format(unshown)
+                'Please go to the website to see them.'.format(unshown)
                 )
             notify(msg)
 
