@@ -26,12 +26,11 @@ class Notifier():
             too many to show (more than `max_show` in `msgs` argument of
             `show_notif` method). An additional notification will be shown,
             saying that there are `len(msgs) - max_show` more notifications
-            to show. If value is 0, all messages will be shown.
+            to show. If value is -1, all messages will be shown.
     """
     def __init__(self, timeout, max_show):
         self.disp_timeout = timeout
         self.max_show = max_show if max_show >= 0 else None
-        # TODO: max_show = -1 , show all notifs
 
     def show_notif(self, title, msgs, icon):
         """
@@ -58,19 +57,18 @@ class Notifier():
             )
 
         msgs_to_show = msgs[0 : self.max_show]
-        more = len(msgs) - len(msgs_to_show)
+        unshown = len(msgs) - len(msgs_to_show)   # count of suppressed msgs
 
         for msg in msgs_to_show:
             notify(msg)
             time.sleep(3)   # give some time to read the notification
 
-        if more != 0:
-            more = len(msgs) - self.max_show
+        if unshown:
             msg = (
                 'You have {} more notification(s) from this website. '
                 'Please go to the website to see them.'
                 '\n\nEdit the "max_show" option in the config file to show '
-                'more messages in the desktop.'.format(more)
+                'more messages in the desktop.'.format(unshown)
                 )
             notify(msg)
 
