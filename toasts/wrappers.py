@@ -93,7 +93,7 @@ class Preferences:
         # confuse looks in system specific directories for config files (config.yaml)
         self._config = confuse.Configuration(appname='toasts')
 
-    def get_pref(self, opt):
+    def get(self, opt):
         """
         Return the value of the `opt` option.
         Args:
