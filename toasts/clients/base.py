@@ -77,12 +77,14 @@ class PersonalAccessTokenClient(Client):
     manually
     """
 
-    USERNAME_ENV_VAR = None   # environment variable holding username
-    TOKEN_ENV_VAR = None   # access token environment variable
-
     def authenticate(self):
-        username = os.getenv(self.USERNAME_ENV_VAR)
-        token = os.getenv(self.TOKEN_ENV_VAR)
+
+        def get_env_var(key):
+            name = self.config.get('.'.join(['sites', self.NAME, key]))
+            return os.getenv(name)
+
+        username = get_env_var('username')
+        token = get_env_var('token')
 
         if not (username and token):
             raise AuthError(self.NAME)

@@ -17,8 +17,6 @@ class GitHubClient(PersonalAccessTokenClient):
 
     NAME = 'github'
     API_ENDPOINT = 'https://api.github.com/notifications'
-    USERNAME_ENV_VAR = 'GH_UNAME'
-    TOKEN_ENV_VAR = 'GH_TOKEN'
 
     def get_notifications(self):
         self.authenticate()
