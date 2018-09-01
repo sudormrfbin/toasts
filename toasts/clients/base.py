@@ -76,6 +76,9 @@ class PersonalAccessTokenClient(Client):
     from a site. Personal access tokens have to be usually aquired by the user
     manually
     """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.authenticate()
 
     def authenticate(self):
 

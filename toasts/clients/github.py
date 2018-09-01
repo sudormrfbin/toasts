@@ -19,7 +19,6 @@ class GitHubClient(PersonalAccessTokenClient):
     API_ENDPOINT = 'https://api.github.com/notifications'
 
     def get_notifications(self):
-        self.authenticate()
         response = self.session.get(self.API_ENDPOINT)
 
         if response.status_code == 200:
