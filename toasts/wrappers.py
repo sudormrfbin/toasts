@@ -80,6 +80,7 @@ class Session(requests.Session):
         super().__init__(*args, **kwargs)
         self.get = functools.partial(self.get, timeout=request_timeout)
 
+    # TODO: wrap requests.exceptions.ConnectionError and requests.exceptions.Timeout
 
 class Preferences:
     """
@@ -88,6 +89,7 @@ class Preferences:
     def __init__(self):
         # confuse looks in system specific directories for config files (config.yaml)
         self._config = confuse.Configuration(appname='toasts')
+        # TODO: supply 2nd argument of Configuration
 
     def get(self, opt):
         """
