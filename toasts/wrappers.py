@@ -6,7 +6,9 @@ toasts.wrappers.py
 Wrapper objects for the app.
 """
 
+import os
 import time
+import shutil
 import functools
 
 import plyer
@@ -86,10 +88,25 @@ class Preferences:
     """
     Class used for fetching preferences.
     """
+    CONFIG_DIR = os.path.join(confuse.config_dirs()[0], 'toasts')
+    USER_CONFIG_FILE = os.path.join(CONFIG_DIR, 'config.yaml')
+    DEFAULT_CONFIG_FILE = util.get_default_config_path()
+
     def __init__(self):
+        if not os.path.exists(self.USER_CONFIG_FILE):
+            self.create_config_file()
         # confuse looks in system specific directories for config files (config.yaml)
         self._config = confuse.Configuration(appname='toasts')
         # TODO: supply 2nd argument of Configuration
+
+    def create_config_file(self):
+        """
+        Create a config file with default settings in `CONFIG_DIR`. Overwrites
+        existing config file.
+        """
+        if not os.path.exists(self.CONFIG_DIR):
+            os.makedirs(self.CONFIG_DIR)
+        shutil.copy(self.DEFAULT_CONFIG_FILE, self.CONFIG_DIR)
 
     def get(self, opt):
         """
