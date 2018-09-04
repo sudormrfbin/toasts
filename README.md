@@ -60,9 +60,10 @@ general:
         .
 ```
 
-Toasts gets Github notifications using a Personal Access Token. Create one with
-.................................................. permissions. Then set the
-environment variables `GH_UNAME` to your Github username and `GH_TOKEN` to the
+Toasts gets Github notifications using a Personal Access Token. Go to
+[Developer Settings](https://github.com/settings/tokens) and create one
+with permission to access your notifications.
+Then set the environment variables `GH_UNAME` to your Github username and `GH_TOKEN` to the
 access token you just created (it is possible to authenticate using your Github
 password; just set `GH_TOKEN` to your password). <!-- security - use password as token -->
 
@@ -80,8 +81,7 @@ enabled sites.
 I'm so happy right now :)
 
 ## The Config File
- The file is in YAML format:
-<!-- add link to yaml site -->
+ The file is in [YAML](https://learnxinyminutes.com/docs/yaml/) format:
 
 ```yaml
 # Config file for toasts
