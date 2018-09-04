@@ -60,9 +60,9 @@ general:
         .
 ```
 
-Toasts gets Github notifications using a Personal Access Token. Create one with
-.................................................. permissions. Then set the
-environment variables `GH_UNAME` to your Github username and `GH_TOKEN` to the
+Toasts gets Github notifications using a Personal Access Token. Create one
+[here](https://github.com/settings/tokens) with permission to read notifications.
+Then set the environment variables `GH_UNAME` to your Github username and `GH_TOKEN` to the
 access token you just created (it is possible to authenticate using your Github
 password; just set `GH_TOKEN` to your password). <!-- security - use password as token -->
 
