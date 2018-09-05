@@ -1,7 +1,7 @@
 
 """
-toasts.app.py
-~~~~~~~~~~~~~~
+toasts.app
+~~~~~~~~~~
 
 Main App class.
 """

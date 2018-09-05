@@ -1,7 +1,7 @@
 
 """
-toasts.util.py
-~~~~~~~~~~~~~~
+toasts.util
+~~~~~~~~~~~
 
 Utilities for toasts
 """

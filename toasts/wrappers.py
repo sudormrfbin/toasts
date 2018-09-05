@@ -1,7 +1,7 @@
 
 """
-toasts.wrappers.py
-~~~~~~~~~~~~~~~~~~
+toasts.wrappers
+~~~~~~~~~~~~~~~
 
 Wrapper objects for the app.
 """
