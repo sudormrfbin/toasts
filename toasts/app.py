@@ -21,14 +21,12 @@ from .exceptions import AuthError, UnexpectedResponse
 class ToastsApp():
     """
     The main app class that runs the app.
-    Attributed:
+    Attributes:
         config (wrappers.Preferences): Object for getting saved user preferences.
+        clients (list): Names of enabled clients.
+        notifier (wrappers.Notifier): Used to show notifications.
     """
     def __init__(self):
-        """
-        Args:
-            config_path (str): Path to the user config file for preferences
-        """
         self.config = wrappers.Preferences()
         self.clients = self.config.get('general.clients')
         self.notifier = wrappers.Notifier(

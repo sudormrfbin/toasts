@@ -3,7 +3,7 @@
 toasts.clients.github
 ~~~~~~~~~~~~~~~~~~~~~
 
-Client for getting notifications from GitHub - www.github.com
+Client for getting notifications from GitHub - https://www.github.com
 
 See https://developer.github.com/v3/activity/notifications/ for api docs.
 """

@@ -3,7 +3,7 @@
 toasts.util
 ~~~~~~~~~~~
 
-Utilities for toasts
+Utilities for toasts.
 """
 
 import os
