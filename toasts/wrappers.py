@@ -84,6 +84,25 @@ class Session(requests.Session):
 
     # TODO: wrap requests.exceptions.ConnectionError and requests.exceptions.Timeout
 
+
+class _ConfuseConfig(confuse.Configuration):
+    """
+    A custom Configuration object to be used by `Preferences`. This is *not*
+    the object used for fetching preferences by the app.
+    """
+    def __init__(self, appname, config, default):
+        self.config = config   # absolute path to user config
+        self.default_config = default   # absolute path to default config file
+        super().__init__(appname)
+
+    def user_config_path(self):
+        return self.config
+
+    def _add_default_source(self):
+        filename = self.default_config
+        self.add(confuse.ConfigSource(confuse.load_yaml(filename), filename, True))
+
+
 class Preferences:
     """
     Class used for fetching preferences.
@@ -96,8 +115,12 @@ class Preferences:
         if not os.path.exists(self.USER_CONFIG_FILE):
             self.create_config_file()
         # confuse looks in system specific directories for config files (config.yaml)
-        self._config = confuse.Configuration(appname='toasts')
-        # TODO: supply 2nd argument of Configuration
+        # by using the app's name
+        self._config = _ConfuseConfig(
+            appname='toasts',
+            config=self.USER_CONFIG_FILE,
+            default=self.DEFAULT_CONFIG_FILE
+            )
 
     def create_config_file(self):
         """

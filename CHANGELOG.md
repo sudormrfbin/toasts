@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+- Use the default config file as a fallback if options are missing in user config file
+
 v0.1.1
 ------
 
