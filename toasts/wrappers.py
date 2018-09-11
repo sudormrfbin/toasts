@@ -18,7 +18,7 @@ import requests
 from . import util
 
 
-class Notifier():
+class Notifier:
     """
     Show desktop notifications.
     Attributes:
@@ -30,6 +30,7 @@ class Notifier():
             saying that there are `len(msgs) - max_show` more notifications
             to show. If value is -1, all messages will be shown.
     """
+
     def __init__(self, timeout, max_show):
         self.disp_timeout = timeout
         self.max_show = max_show if max_show >= 0 else None
@@ -49,32 +50,33 @@ class Notifier():
                 stripped off it's extension. Eg: github (not github.png)
         """
         icon_path = util.get_icon(icon)
+
         def notify(msg):
             plyer.notification.notify(
                 title=title,
                 message=msg,
                 app_icon=icon_path,
-                app_name='toasts',
-                timeout=self.disp_timeout
+                app_name="toasts",
+                timeout=self.disp_timeout,
             )
 
         msgs_to_show = msgs[0 : self.max_show]
-        unshown = len(msgs) - len(msgs_to_show)   # count of suppressed msgs
+        unshown = len(msgs) - len(msgs_to_show)  # count of suppressed msgs
 
         for msg in msgs_to_show:
             notify(msg)
-            time.sleep(3)   # give some time to read the notification
+            time.sleep(3)  # give some time to read the notification
 
         if unshown:
             msg = (
-                'You have {} more notification(s) from this website. '
-                'Please go to the website to see them.'.format(unshown)
-                )
+                "You have {} more notification(s) from this website. "
+                "Please go to the website to see them.".format(unshown)
+            )
             notify(msg)
 
-    def show_error(self, msg, title='An error occured in Toasts'):
+    def show_error(self, msg, title="An error occured in Toasts"):
         """Show an error message as notification. `msg` is a string."""
-        self.show_notif(title=title, msgs=[msg], icon='error')
+        self.show_notif(title=title, msgs=[msg], icon="error")
 
 
 class Session(requests.Session):
@@ -90,9 +92,10 @@ class _ConfuseConfig(confuse.Configuration):
     A custom Configuration object to be used by `Preferences`. This is *not*
     the object used for fetching preferences by the app.
     """
+
     def __init__(self, appname, config, default):
-        self.config = config   # absolute path to user config
-        self.default_config = default   # absolute path to default config file
+        self.config = config  # absolute path to user config
+        self.default_config = default  # absolute path to default config file
         super().__init__(appname)
 
     def user_config_path(self):
@@ -107,8 +110,9 @@ class Preferences:
     """
     Class used for fetching preferences.
     """
-    CONFIG_DIR = os.path.join(confuse.config_dirs()[0], 'toasts')
-    USER_CONFIG_FILE = os.path.join(CONFIG_DIR, 'config.yaml')
+
+    CONFIG_DIR = os.path.join(confuse.config_dirs()[0], "toasts")
+    USER_CONFIG_FILE = os.path.join(CONFIG_DIR, "config.yaml")
     DEFAULT_CONFIG_FILE = util.get_default_config_path()
 
     def __init__(self):
@@ -117,10 +121,10 @@ class Preferences:
         # confuse looks in system specific directories for config files (config.yaml)
         # by using the app's name
         self._config = _ConfuseConfig(
-            appname='toasts',
+            appname="toasts",
             config=self.USER_CONFIG_FILE,
-            default=self.DEFAULT_CONFIG_FILE
-            )
+            default=self.DEFAULT_CONFIG_FILE,
+        )
 
     def create_config_file(self):
         """
@@ -138,6 +142,6 @@ class Preferences:
             opt (str): name of option - "general.clients", "sites.github.token", etc.
         """
         val = self._config
-        for key in opt.split('.'):
+        for key in opt.split("."):
             val = val[key]
         return val.get()

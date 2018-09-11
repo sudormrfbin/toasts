@@ -32,7 +32,7 @@ class Client(metaclass=ABCMeta):
             config (toasts.wrappers.Preferences): Contains preferences set by user.
         """
         self.config = config
-        rt = self.config.get('general.notif_timeout')
+        rt = self.config.get("general.notif_timeout")
         self.session = wrappers.Session(request_timeout=rt)
 
     @abstractmethod
@@ -76,18 +76,18 @@ class PersonalAccessTokenClient(Client):
     from a site. Personal access tokens have to be usually acquired by the user
     manually.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.authenticate()
 
     def authenticate(self):
-
         def get_env_var(key):
-            name = self.config.get('.'.join(['sites', self.NAME, key]))
+            name = self.config.get(".".join(["sites", self.NAME, key]))
             return os.getenv(name)
 
-        username = get_env_var('username')
-        token = get_env_var('token')
+        username = get_env_var("username")
+        token = get_env_var("token")
 
         if not (username and token):
             raise AuthError(self.NAME)
