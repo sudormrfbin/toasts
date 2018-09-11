@@ -18,6 +18,28 @@ import requests
 from . import util
 
 
+class Notification:
+    """
+    Notification object with metadata about a notification.
+    Attributes:
+        title (str): Title of the notification.
+        client (str): Name of client from which the notification originated.
+        uid (int): Unique id of the notification, as provided by the client.
+        msg (str): Content of the notification.
+    """
+    def __init__(self, msg, client, uid, title=None):
+        self.msg = msg
+        self.client = client
+        self.uid = uid
+        if title is None:
+            self.title = "Notification from {}".format(self.client.title())
+        else:
+            self.title = title
+
+    def __eq__(self, other):
+        return self.uid == other.uid and self.client == other.client
+
+
 class Notifier:
     """
     Show desktop notifications.
