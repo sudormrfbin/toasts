@@ -113,8 +113,3 @@ sites:
                 # Default: GH_TOKEN
                 token: GH_TOKEN
 ```
-
-## Known Issues
-
-Unread notifications will be shown again until you mark them as read in the
-corresponding website. It's planned to be fixed in the next release.
