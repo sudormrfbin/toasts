@@ -74,11 +74,14 @@ class Notifier:
             `show_notif` method). An additional notification will be shown,
             saying that there are `len(msgs) - max_show` more notifications
             to show. If value is -1, all messages will be shown.
+        _history (list of ClientNotification):
+            Previously shown notifications (in this instance of the app).
     """
 
     def __init__(self, timeout, max_show):
         self.disp_timeout = timeout
         self.max_show = max_show if max_show >= 0 else None
+        self._history = []
 
     def show_notif(self, notifs):
         """
@@ -89,8 +92,10 @@ class Notifier:
                 be from the same client at a time.
         """
 
-        msgs_to_show = notifs[0 : self.max_show]
-        unshown = len(notifs) - len(msgs_to_show)  # count of suppressed msgs
+        new_notifs = [n for n in notifs if n not in self._history]
+        self._history.extend(new_notifs)
+        msgs_to_show = new_notifs[0 : self.max_show]
+        unshown = len(new_notifs) - len(msgs_to_show)  # count of suppressed msgs
 
         for notification in msgs_to_show:
             self._notify(notification)
