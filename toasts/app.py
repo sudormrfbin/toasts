@@ -13,9 +13,9 @@ import traceback
 # TODO: get list of common errors produced by requests
 import requests
 
-from . import wrappers
 from .clients import CLIENTS
 from .exceptions import AuthError, UnexpectedResponse
+from .wrappers import Notifier, Preferences, ErrorNotification
 
 
 class ToastsApp:
@@ -28,9 +28,9 @@ class ToastsApp:
     """
 
     def __init__(self):
-        self.config = wrappers.Preferences()
+        self.config = Preferences()
         self.clients = self.config.get("general.clients")
-        self.notifier = wrappers.Notifier(
+        self.notifier = Notifier(
             timeout=self.config.get("general.notif_timeout"),
             max_show=self.config.get("general.notif_max_show"),
         )
@@ -39,10 +39,11 @@ class ToastsApp:
     def run(self):
         """Launch the app and start showing notifications."""
         if not self.clients:
-            self.notifier.show_error(
-                "No clients enabled - please enable atleast one client in the"
-                " config file and restart the app."
+            msg = (
+                "No clients enabled - please enable atleast one client "
+                "in the config file and restart the app."
             )
+            self.notifier.show_error(ErrorNotification(msg=msg))
             # TODO: include location of config file in error message
             self.exit_with_error("No clients enabled")
 
@@ -52,17 +53,16 @@ class ToastsApp:
                 client_obj = CLIENTS[client]
                 client_list.append(client_obj(config=self.config))
             except KeyError:
-                self.notifier.show_error(
-                    "Invalid client name specified in config file - {}.\
-                     Please give a valid client name and restart the app.\
-                    ".format(
-                        client
-                    )
-                )
+                msg = (
+                    "Invalid client name specified in config file - {}. "
+                    "Please give a valid client name and restart the app."
+                ).format(client)
+                self.notifier.show_error(ErrorNotification(msg=msg))
                 self.exit_with_error('Invalid client name "{}"'.format(client))
             except AuthError as err:
                 msg = "Invalid credentials for {}.".format(client_obj.NAME)
-                self.notifier.show_error(title=str(err), msg=msg)
+                eno = ErrorNotification(title=str(err), msg=msg)
+                self.notifier.show_error(eno)
                 self.exit_with_error(msg)
 
         while True:
@@ -70,24 +70,22 @@ class ToastsApp:
                 for client in client_list:
                     try:
                         notifs = client.get_notifications()
-                        self.notifier.show_notif(
-                            title="Notification from {}".format(client.NAME.title()),
-                            msgs=notifs,
-                            icon=client.NAME,
-                        )
+                        self.notifier.show_notif(notifs)
                     except AuthError as err:
                         msg = "Invalid credentials for {}.".format(client.NAME)
-                        self.notifier.show_error(title=str(err), msg=msg)
+                        eno = ErrorNotification(title=str(err), msg=msg)
+                        self.notifier.show_error(eno)
                         self.exit_with_error(msg)
                     except UnexpectedResponse as err:
                         sys.stderr.write(str(err) + "\n")
                     except (requests.Timeout, requests.ConnectionError):
                         pass
             except Exception as err:
-                self.notifier.show_error(
-                    "A critical error caused Toasts to crash.\
-                     Please restart the app."
+                msg = (
+                    "A critical error caused Toasts to crash. "
+                    "Please restart the app."
                 )
+                self.notifier.show_error(ErrorNotification(msg))
                 self.exit_with_error(traceback.format_exc())
 
             sleep_sec = self.config.get("general.check_every")

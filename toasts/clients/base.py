@@ -45,9 +45,9 @@ class Client(metaclass=ABCMeta):
         Get notifications from the specified site through `API_ENDPOINT`.
 
         Returns:
-            list of str: Text to displayed as notification. Each item in
-                the list is a seperate notification. Empty list is returned if
-                there are no new notifications.
+            list of toasts.wrappers.Notification:
+                Each item in the list is a seperate notification to be shown.
+                Empty list is returned if there are no new notifications.
         Raises:
             toasts.exceptions.AuthError: Invalid credentials.
             toasts.exceptions.UnexpectedResponse: Recieved an unknown status code.
@@ -64,8 +64,7 @@ class Client(metaclass=ABCMeta):
             data (object): Python object from `json.loads`, usually a `dict`.
 
         Returns:
-            list of str: Each item of the list is a notification to be
-                displayed as such.
+            list of dict: dicts of the form {"msg": "...", "uid": 12} in a list.
         """
         pass
 
