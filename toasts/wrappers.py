@@ -18,26 +18,49 @@ import requests
 from . import util
 
 
-class Notification:
+class BaseNotification:
     """
-    Notification object with metadata about a notification.
+    Base class for Notification objects, holding metadata about a notification.
     Attributes:
         title (str): Title of the notification.
+        msg (str): Content of the notification.
+        icon_path (str): Path to the icon that should be used when displaying.
+    """
+
+    def __init__(self, title, msg, icon):
+        # NOTE: `icon` is the name of the icon to be used, without the extension
+        # like github, and not github.png; it will be expanded to the absolute path
+        self.title = title
+        self.msg = msg
+        self.icon_path = util.get_icon(icon)
+
+
+class ClientNotification(BaseNotification):
+    """
+    Notification object to be used when there is a notification from a client.
+    Attributes:
         client (str): Name of client from which the notification originated.
         uid (int): Unique id of the notification, as provided by the client.
-        msg (str): Content of the notification.
     """
+
     def __init__(self, msg, client, uid, title=None):
-        self.msg = msg
         self.client = client
         self.uid = uid
         if title is None:
-            self.title = "Notification from {}".format(self.client.title())
-        else:
-            self.title = title
+            title = "Notification from {}".format(client.title())
+        super().__init__(title=title, msg=msg, icon=client)
 
     def __eq__(self, other):
         return self.uid == other.uid and self.client == other.client
+
+
+class ErrorNotification(BaseNotification):
+    """
+    Notification object used for showing errors.
+    """
+
+    def __init__(self, msg, title="An error occured in Toasts"):
+        super().__init__(title=title, msg=msg, icon="error")
 
 
 class Notifier:
@@ -57,36 +80,20 @@ class Notifier:
         self.disp_timeout = timeout
         self.max_show = max_show if max_show >= 0 else None
 
-    def show_notif(self, title, msgs, icon):
+    def show_notif(self, notifs):
         """
         Show a notification.
         Args:
-            title (str): Title of notification.
-            msgs (iterable of str): List of notifications to display.
-                Every item in `msgs` is a message that has to displayed in
-                seperate notifications. Every item will be displayed unless
-                the `notif_max_show` attribute has a non-zero value. All the
-                notifications will have the same icon and title.
-            icon (str): Name of icon to be used.
-                `icon` should be the name of a file in `toasts/data/icons/`,
-                stripped off it's extension. Eg: github (not github.png)
+            notifs (list of ClientNotification):
+                List of notifications to show. All the notifications will
+                be from the same client at a time.
         """
-        icon_path = util.get_icon(icon)
 
-        def notify(msg):
-            plyer.notification.notify(
-                title=title,
-                message=msg,
-                app_icon=icon_path,
-                app_name="toasts",
-                timeout=self.disp_timeout,
-            )
+        msgs_to_show = notifs[0 : self.max_show]
+        unshown = len(notifs) - len(msgs_to_show)  # count of suppressed msgs
 
-        msgs_to_show = msgs[0 : self.max_show]
-        unshown = len(msgs) - len(msgs_to_show)  # count of suppressed msgs
-
-        for msg in msgs_to_show:
-            notify(msg)
+        for notification in msgs_to_show:
+            self._notify(notification)
             time.sleep(3)  # give some time to read the notification
 
         if unshown:
@@ -94,11 +101,32 @@ class Notifier:
                 "You have {} more notification(s) from this website. "
                 "Please go to the website to see them.".format(unshown)
             )
-            notify(msg)
+            # get name of client that made the notifs; all are from the same client
+            client = notifs[0].client
+            n = ClientNotification(msg=msg, client=client, uid=None)
+            self._notify(n)
 
-    def show_error(self, msg, title="An error occured in Toasts"):
-        """Show an error message as notification. `msg` is a string."""
-        self.show_notif(title=title, msgs=[msg], icon="error")
+    def show_error(self, error):
+        """
+        Show an error message as notification.
+        Args:
+            error (ErrorNotification): Notification object.
+        """
+        self._notify(error)
+
+    def _notify(self, notif_obj):
+        """
+        Actual method that shows a notification.
+        Args:
+            notif_obj (BaseNotification): Notification object.
+        """
+        plyer.notification.notify(
+            title=notif_obj.title,
+            message=notif_obj.msg,
+            app_icon=notif_obj.icon_path,
+            app_name="toasts",
+            timeout=self.disp_timeout,
+        )
 
 
 class Session(requests.Session):
