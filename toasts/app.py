@@ -88,8 +88,8 @@ class ToastsApp:
                 self.notifier.show_error(ErrorNotification(msg))
                 self.exit_with_error(traceback.format_exc())
 
-            sleep_sec = self.config.get("general.check_every")
-            time.sleep(sleep_sec * 60)  # convert to seconds
+            sleep_min = self.config.get("general.check_every")
+            time.sleep(sleep_min * 60)  # convert to seconds
 
     @staticmethod
     def exit_with_error(msg):
