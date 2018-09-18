@@ -68,7 +68,8 @@ class Notifier:
     Show desktop notifications.
     Attributes:
         disp_timeout (int): Show a notification for this much seconds.
-        max_show (int): Maximum number of notifications to show at a time.
+        max_show (int):
+            Maximum number of notifications to show at a time.
             Show only this much number of notifications, if there are
             too many to show (more than `max_show` in `msgs` argument of
             `show_notif` method). An additional notification will be shown,
@@ -194,7 +195,8 @@ class Preferences:
         """
         Return the value of the `opt` option.
         Args:
-            opt (str): name of option - "general.clients", "sites.github.token", etc.
+            opt (str):
+                name of option - "general.clients", "sites.github.token", etc.
         """
         val = self._config
         for key in opt.split("."):
