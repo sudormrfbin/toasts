@@ -60,10 +60,8 @@ class ToastsApp:
                 self.notifier.show_error(ErrorNotification(msg=msg))
                 self.exit_with_error('Invalid client name "{}"'.format(client))
             except AuthError as err:
-                msg = "Invalid credentials for {}.".format(client_obj.NAME)
-                eno = ErrorNotification(title=str(err), msg=msg)
-                self.notifier.show_error(eno)
-                self.exit_with_error(msg)
+                self.notifier.show_error(ErrorNotification(msg=str(err)))
+                self.exit_with_error(msg=str(err))
 
         while True:
             try:
@@ -72,10 +70,8 @@ class ToastsApp:
                         notifs = client.get_notifications()
                         self.notifier.show_notif(notifs)
                     except AuthError as err:
-                        msg = "Invalid credentials for {}.".format(client.NAME)
-                        eno = ErrorNotification(title=str(err), msg=msg)
-                        self.notifier.show_error(eno)
-                        self.exit_with_error(msg)
+                        self.notifier.show_error(ErrorNotification(msg=str(err)))
+                        self.exit_with_error(msg=str(err))
                     except UnexpectedResponse as err:
                         sys.stderr.write(str(err) + "\n")
                     except (requests.Timeout, requests.ConnectionError):

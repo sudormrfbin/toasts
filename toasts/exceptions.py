@@ -17,7 +17,7 @@ class AuthError(ToastError):
     """Raised when invalid credentials are supplied."""
 
     def __init__(self, client):
-        msg = "Authentication error for {}".format(client)
+        msg = "Invalid credentials for authentication in {}".format(client)
         super().__init__(msg)
 
 
