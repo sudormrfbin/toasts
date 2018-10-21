@@ -1,5 +1,11 @@
+import sys
 
 from .app import ToastsApp
 
+
 def main():
-    ToastsApp().run()
+    print("Press Control-C to quit")
+    try:
+        ToastsApp().run()
+    except KeyboardInterrupt:
+        sys.exit(0)

@@ -29,11 +29,10 @@ class Client(metaclass=ABCMeta):
     def __init__(self, config):
         """
         Args:
-            config (toasts.wrappers.Preferences): Contains preferences set
-                by user.
+            config (toasts.wrappers.Preferences): Contains preferences set by user.
         """
         self.config = config
-        rt = self.config.get('general.notif_timeout')
+        rt = self.config.get("general.notif_timeout")
         self.session = wrappers.Session(request_timeout=rt)
 
     @abstractmethod
@@ -46,11 +45,12 @@ class Client(metaclass=ABCMeta):
         Get notifications from the specified site through `API_ENDPOINT`.
 
         Returns:
-            list of str: Text to displayed as notification. Each item in
-                the list is a seperate notification. Empty list is returned if
-                there are no new notifications.
+            list of toasts.wrappers.Notification:
+                Each item in the list is a seperate notification to be shown.
+                Empty list is returned if there are no new notifications.
         Raises:
             toasts.exceptions.AuthError: Invalid credentials.
+            toasts.exceptions.UnexpectedResponse: Recieved an unknown status code.
         """
         pass
 
@@ -61,33 +61,32 @@ class Client(metaclass=ABCMeta):
         `get_notifications`.
 
         Args:
-            data(json): Python object from `json.loads`.
+            data (object): Python object from `json.loads`, usually a `dict`.
 
         Returns:
-            list of str: Each item of the list is a notification to be
-                displayed as such.
+            list of dict: dicts of the form {"msg": "...", "uid": 12} in a list.
         """
         pass
 
 
 class PersonalAccessTokenClient(Client):
     """
-    Clients that use a personal access token to get resources(notifications)
-    from a site. Personal access tokens have to be usually aquired by the user
-    manually
+    Clients that use a personal access token to get resources (notifications)
+    from a site. Personal access tokens have to be usually acquired by the user
+    manually.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.authenticate()
 
     def authenticate(self):
-
         def get_env_var(key):
-            name = self.config.get('.'.join(['sites', self.NAME, key]))
+            name = self.config.get(".".join(["sites", self.NAME, key]))
             return os.getenv(name)
 
-        username = get_env_var('username')
-        token = get_env_var('token')
+        username = get_env_var("username")
+        token = get_env_var("token")
 
         if not (username and token):
             raise AuthError(self.NAME)

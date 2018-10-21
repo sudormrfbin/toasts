@@ -1,7 +1,7 @@
 
 """
-toasts.app.py
-~~~~~~~~~~~~~~
+toasts.app
+~~~~~~~~~~
 
 Main App class.
 """
@@ -13,39 +13,39 @@ import traceback
 # TODO: get list of common errors produced by requests
 import requests
 
-from . import wrappers
 from .clients import CLIENTS
 from .exceptions import AuthError, UnexpectedResponse
+from .wrappers import Notifier, Preferences, ErrorNotification
 
 
-class ToastsApp():
+class ToastsApp:
     """
     The main app class that runs the app.
-    Attributed:
+    Attributes:
         config (wrappers.Preferences): Object for getting saved user preferences.
+        clients (list): Names of enabled clients.
+        notifier (wrappers.Notifier): Used to show notifications.
     """
+
     def __init__(self):
-        """
-        Args:
-            config_path (str): Path to the user config file for preferences
-        """
-        self.config = wrappers.Preferences()
-        self.clients = self.config.get('general.clients')
-        self.notifier = wrappers.Notifier(
-            timeout=self.config.get('general.notif_timeout'),
-            max_show=self.config.get('general.notif_max_show')
+        self.config = Preferences()
+        self.clients = self.config.get("general.clients")
+        self.notifier = Notifier(
+            timeout=self.config.get("general.notif_timeout"),
+            max_show=self.config.get("general.notif_max_show"),
         )
 
     # FIXME: refactor run method (McCabe rating is 13)
     def run(self):
         """Launch the app and start showing notifications."""
         if not self.clients:
-            self.notifier.show_error(
-                'No clients enabled - please enable atleast one client in the'
-                ' config file and restart the app.'
+            msg = (
+                "No clients enabled - please enable atleast one client "
+                "in the config file and restart the app."
             )
+            self.notifier.show_error(ErrorNotification(msg=msg))
             # TODO: include location of config file in error message
-            self.exit_with_error('No clients enabled')
+            self.exit_with_error("No clients enabled")
 
         client_list = []
         for client in self.clients:
@@ -53,44 +53,39 @@ class ToastsApp():
                 client_obj = CLIENTS[client]
                 client_list.append(client_obj(config=self.config))
             except KeyError:
-                self.notifier.show_error(
-                    "Invalid client name specified in config file - {}.\
-                     Please give a valid client name and restart the app.\
-                    ".format(client)
-                )
+                msg = (
+                    "Invalid client name specified in config file - {}. "
+                    "Please give a valid client name and restart the app."
+                ).format(client)
+                self.notifier.show_error(ErrorNotification(msg=msg))
                 self.exit_with_error('Invalid client name "{}"'.format(client))
             except AuthError as err:
-                msg = 'Invalid credentials for {}.'.format(client_obj.NAME)
-                self.notifier.show_error(title=str(err), msg=msg)
-                self.exit_with_error(msg)
+                self.notifier.show_error(ErrorNotification(msg=str(err)))
+                self.exit_with_error(msg=str(err))
 
         while True:
             try:
                 for client in client_list:
                     try:
                         notifs = client.get_notifications()
-                        self.notifier.show_notif(
-                            title='Notification from {}'.format(client.NAME.title()),
-                            msgs=notifs,
-                            icon=client.NAME
-                        )
+                        self.notifier.show_notif(notifs)
                     except AuthError as err:
-                        msg = 'Invalid credentials for {}.'.format(client.NAME)
-                        self.notifier.show_error(title=str(err), msg=msg)
-                        self.exit_with_error(msg)
+                        self.notifier.show_error(ErrorNotification(msg=str(err)))
+                        self.exit_with_error(msg=str(err))
                     except UnexpectedResponse as err:
-                        sys.stderr.write(str(err) + '\n')
+                        sys.stderr.write(str(err) + "\n")
                     except (requests.Timeout, requests.ConnectionError):
                         pass
             except Exception as err:
-                self.notifier.show_error(
-                    'A critical error caused Toasts to crash.\
-                     Please restart the app.'
+                msg = (
+                    "A critical error caused Toasts to crash. "
+                    "Please restart the app."
                 )
+                self.notifier.show_error(ErrorNotification(msg))
                 self.exit_with_error(traceback.format_exc())
 
-            sleep_sec = self.config.get('general.check_every')
-            time.sleep(sleep_sec * 60)   # convert to seconds
+            sleep_min = self.config.get("general.check_every")
+            time.sleep(sleep_min * 60)  # convert to seconds
 
     @staticmethod
     def exit_with_error(msg):
@@ -99,4 +94,4 @@ class ToastsApp():
         Args:
             msg (str): Message to print to stderr.
         """
-        sys.exit('ERROR(toasts) - ' + msg)
+        sys.exit("ERROR(toasts) - " + msg)
