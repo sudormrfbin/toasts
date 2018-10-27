@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+- Fix: update lock file to include dbus-python only for linux
+
 v0.1.2
 ------
 

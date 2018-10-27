@@ -28,6 +28,7 @@ pyyaml = "*"
 [[package]]
 category = "main"
 description = "Python bindings for libdbus"
+marker = "sys_platform == \"linux\""
 name = "dbus-python"
 optional = false
 python-versions = "*"
@@ -80,7 +81,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4"
 version = "1.24"
 
 [metadata]
-content-hash = "14b666a2da6304bb600b5b8338103e39bf22517f815512f91c9def3a5dbe058d"
+content-hash = "97fd07f70e701b07a0074fcb5c5e63a73f12e198087d6244fc692bdd8da518d1"
 python-versions = "^3.4"
 
 [metadata.hashes]
